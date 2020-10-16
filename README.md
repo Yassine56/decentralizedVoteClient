@@ -122,7 +122,7 @@ If you want to be inspired by the Kaleido brand...
 
 ### Styles
 
-![Product Colors](https://github.com/kaleido-io/frontend-challenge/blob/master/StyleGuide/Colors.png?raw=true 'Product Colors')
+![Product Colors](StyleGuide/Colors.png?raw=true 'Product Colors')
 
-![Text Styles](https://github.com/kaleido-io/frontend-challenge/blob/master/StyleGuide/TextStyles.png?raw=true 'Text Styles')
+![Text Styles](StyleGuide/TextStyles.png?raw=true 'Text Styles')
 
