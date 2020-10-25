@@ -6,6 +6,10 @@ import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import CompaignSettings from './CompaignSettings'
+import OptionsSettings from './OptionsSettings'
+import ReviewAndFinish from './ReviewAndFinish'
+import { useRecoilState } from 'recoil'
+import { compaignsList } from '../state/CompaignState'
 
 import { letterAndSpacesOnly, numbersOnly, validate } from '../utils/validation'
 
@@ -23,23 +27,35 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function getSteps() {
-	return ['Compaign settings', 'Add Candidates', 'Review and Finish']
+	return ['Compaign settings', 'Add Options', 'Review and Finish']
 }
 
-function getStepContent(step, formState, setFormState) {
+function getStepContent(step, formState, setFormState, errors) {
 	switch (step) {
 		case 0:
-			return <CompaignSettings formState={formState} setFormState={setFormState} />
+			return (
+				<CompaignSettings
+					errors={errors}
+					formState={formState}
+					setFormState={setFormState}
+				/>
+			)
 		case 1:
-			return 'What is an ad group anyways?'
+			return (
+				<OptionsSettings
+					errors={errors}
+					formState={formState}
+					setFormState={setFormState}
+				/>
+			)
 		case 2:
-			return 'This is the bit I really care about!'
+			return <ReviewAndFinish formState={formState} />
 		default:
 			return 'Unknown step'
 	}
 }
 
-function CompaignStepper() {
+function CompaignStepper({ handleClose }) {
 	const classes = useStyles()
 	const [activeStep, setActiveStep] = useState(0)
 	const [skipped, setSkipped] = useState(new Set())
@@ -47,13 +63,15 @@ function CompaignStepper() {
 		0: {
 			title: '',
 			description: '',
-			rounds: 1,
+			rounds: 0,
 			organizer: '',
 		},
 		1: {
-			candidates: [],
+			options: [],
 		},
 	})
+	const [errors, setErrors] = useState({})
+	const [compaigns, setCompaigns] = useRecoilState(compaignsList)
 	const steps = getSteps()
 
 	const isStepOptional = (step) => {
@@ -74,18 +92,24 @@ function CompaignStepper() {
 	}
 
 	const validateActiveStep = (activeStep) => {
-		let errors = validate(formState[activeStep], stepValidation[activeStep])
-		console.log('errors', errors)
+		return (
+			stepValidation[activeStep] &&
+			validate(formState[activeStep], stepValidation[activeStep])
+		)
 	}
 
 	const handleNext = (activeStep) => {
-		validateActiveStep(activeStep)
 		let newSkipped = skipped
 		if (isStepSkipped(activeStep)) {
 			newSkipped = new Set(newSkipped.values())
 			newSkipped.delete(activeStep)
 		}
-
+		let errors = validateActiveStep(activeStep)
+		console.log('errors', errors)
+		if (errors) {
+			setErrors(errors)
+			return
+		}
 		setActiveStep((prevActiveStep) => prevActiveStep + 1)
 		setSkipped(newSkipped)
 	}
@@ -109,8 +133,27 @@ function CompaignStepper() {
 		})
 	}
 
-	const handleReset = () => {
-		setActiveStep(0)
+	const handleSave = () => {
+		//api call and save to global state
+		setCompaigns([
+			...compaigns,
+			{
+				id: compaigns.length,
+				title: formState[0].title,
+				description: formState[0].description,
+				rounds: formState[0].rounds,
+				organizer: formState[0].organizer,
+				options: formState[1].options.map((option) => {
+					return {
+						label: option.label,
+						votes: 0,
+						voters: [],
+						addedBy: formState[0].organizer,
+					}
+				}),
+			},
+		])
+		handleClose()
 	}
 
 	return (
@@ -138,14 +181,14 @@ function CompaignStepper() {
 						<Typography className={classes.instructions}>
 							All steps completed - you&apos;re finished
 						</Typography>
-						<Button onClick={handleReset} className={classes.button}>
-							Reset
+						<Button onClick={handleSave} className={classes.button}>
+							Save
 						</Button>
 					</div>
 				) : (
 					<div>
 						<div className={classes.instructions}>
-							{getStepContent(activeStep, formState, setFormState)}
+							{getStepContent(activeStep, formState, setFormState, errors)}
 						</div>
 						<div>
 							<Button

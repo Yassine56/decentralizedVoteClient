@@ -38,8 +38,7 @@ function CompaignCreation({ open, handleClose }) {
 				<Fade in={open}>
 					<div className={classes.paper}>
 						<h2 id='transition-modal-title'>Compaign Creation</h2>
-						<CompaignStepper />
-						<button onClick={handleClose}>CLOSE</button>
+						<CompaignStepper handleClose={handleClose} />
 					</div>
 				</Fade>
 			</Modal>

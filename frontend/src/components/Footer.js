@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
 		left: '0',
 		bottom: '0',
 		right: '0',
+		position: 'relative',
 	},
 	list: {
 		width: 250,
@@ -56,7 +57,7 @@ function Footer() {
 			onKeyDown={toggleDrawer(anchor, false)}
 		>
 			<List>
-				{['home', 'campaigns'].map((text, index) => (
+				{['home', 'compaigns'].map((text, index) => (
 					<ListItem button key={text}>
 						<ListItemText onClick={() => history.push(`/${text}`)} primary={text} />
 					</ListItem>

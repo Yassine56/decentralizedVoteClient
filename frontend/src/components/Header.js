@@ -31,7 +31,7 @@ export default function ButtonAppBar() {
 						Home
 					</Button>
 					<Button
-						onClick={() => history.push('/campaigns')}
+						onClick={() => history.push('/compaigns')}
 						color='inherit'
 						className={classes.title}
 					>

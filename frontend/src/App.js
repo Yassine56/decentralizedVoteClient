@@ -5,19 +5,23 @@ import Home from './components/Home'
 import Header from './components/Header'
 import Compaigns from './components/Compaigns'
 import Footer from './components/Footer'
+import { RecoilRoot } from 'recoil'
 
 function App() {
 	return (
-		<Router>
-			<Header />
-			<Switch>
-				<Route path='/' component={Home} exact />
-				<Route path='/login' component={Login} />
-				<Route path='/campaigns' component={Compaigns} />
-				<Route path='/home' component={Home} />
-			</Switch>
-			<Footer />
-		</Router>
+		<RecoilRoot>
+			<Router>
+				<Header />
+				<Switch>
+					<Route path='/' component={Home} exact />
+					<Route path='/login' component={Login} />
+					<Route path='/compaigns' component={Compaigns} exact />
+					<Route path='/compaigns/:id' component={Compaigns} exact />
+					<Route path='/home' component={Home} />
+				</Switch>
+				<Footer />
+			</Router>
+		</RecoilRoot>
 	)
 }
 export default App

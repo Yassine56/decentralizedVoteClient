@@ -1,17 +1,27 @@
 export const letterAndSpacesOnly = (testString) => {
 	let regex = /^[a-zA-Z\s]*$/
 	return {
-		res: testString.match(regex),
-		message: 'Mandatory filed, should contain letters and spaces only',
+		res: testString && testString.match(regex),
+		message: 'Mandatory field, should contain letters and spaces only',
 	}
 }
 export const numbersOnly = (testString) => {
 	let regx = new RegExp('^[0-9]*$')
 	return {
-		res: testString.match(regx),
-		message: 'Mandatory filed, should contain numbers only',
+		res: testString && testString.toString().match(regx),
+		message: 'Mandatory field, should contain numbers only',
 	}
 }
+
+export const validateEmail = (testString) => {
+	let regx = /\S+@\S+\.\S+/
+	console.log('testString.match(regx)', testString.match(regx))
+	return {
+		res: testString && testString.match(regx),
+		message: 'Mandatory field, must enter a valid email address',
+	}
+}
+
 export const validate = (formState, validations) => {
 	let keys = Object.keys(formState)
 	let errors
