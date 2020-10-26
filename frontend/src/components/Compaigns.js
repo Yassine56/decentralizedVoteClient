@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Divider from '@material-ui/core/Divider'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
@@ -8,6 +8,9 @@ import CompaignCards from './CompaignCards'
 import CompaignCreation from './CompaignCreation'
 import { useParams } from 'react-router-dom'
 import CompaignDetail from './CompaignDetail'
+import { useRecoilState } from 'recoil'
+import { compaignsList } from '../state/CompaignState'
+import { listCompaigns } from '../actions'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -28,6 +31,16 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Compaigns() {
+	const [compaigns, setCompaigns] = useRecoilState(compaignsList)
+	useEffect(() => {
+		const callListCompaigns = async () => {
+			const response = await listCompaigns()
+			if (response.success) {
+				setCompaigns(response.response)
+			}
+		}
+		callListCompaigns()
+	}, [])
 	const classes = useStyles()
 	const [curserPointer, setCurserPointer] = useState(false)
 	const [open, setOpen] = useState(false)

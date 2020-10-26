@@ -15,7 +15,6 @@ export const numbersOnly = (testString) => {
 
 export const validateEmail = (testString) => {
 	let regx = /\S+@\S+\.\S+/
-	console.log('testString.match(regx)', testString.match(regx))
 	return {
 		res: testString && testString.match(regx),
 		message: 'Mandatory field, must enter a valid email address',
@@ -27,7 +26,6 @@ export const validate = (formState, validations) => {
 	let errors
 	for (let i = 0; i < keys.length; i++) {
 		let key = keys[i]
-		console.log('key', key)
 		let test = validations[key](formState[key])
 		if (!test.res) {
 			errors = {

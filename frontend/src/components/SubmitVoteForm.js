@@ -5,6 +5,7 @@ import { letterAndSpacesOnly, validate, validateEmail } from '../utils/validatio
 import Button from '@material-ui/core/Button'
 import { useRecoilState } from 'recoil'
 import { compaignsList } from '../state/CompaignState'
+import { updateCompaign } from '../actions'
 
 function SubmitVoteForm({ vote, compaign }) {
 	const [compaigns, setCompaigns] = useRecoilState(compaignsList)
@@ -27,9 +28,8 @@ function SubmitVoteForm({ vote, compaign }) {
 		email: validateEmail,
 	}
 
-	const handleSubmitVoteClick = () => {
+	const handleSubmitVoteClick = async () => {
 		let error = validate(formState, validations)
-		console.log('errors', errors)
 		if (error) {
 			setErrors(error)
 			return
@@ -38,7 +38,6 @@ function SubmitVoteForm({ vote, compaign }) {
 			return { ...el, index }
 		})
 		let [votedOptionIndex] = votesWithIndex.filter((el, idx) => el.voted == true)
-		console.log('votedOptionIndex', votedOptionIndex)
 		// check if option is selected
 		if (!votedOptionIndex) {
 			setErrors({
@@ -66,9 +65,16 @@ function SubmitVoteForm({ vote, compaign }) {
 		let newCompaign = { ...compaign, options: newOptions }
 		let newCompaignIndex = newCompaigns.map((el) => el.id).indexOf(newCompaign.id)
 		newCompaigns[newCompaignIndex] = newCompaign
-		console.log('newCompaign', newCompaigns)
-		setCompaigns(newCompaigns)
-		setErrors({})
+		let response = await updateCompaign({
+			...newCompaigns[newCompaignIndex],
+			options: {
+				0: newCompaigns[newCompaignIndex].options,
+			},
+		})
+		if (response.success) {
+			setCompaigns(newCompaigns)
+			setErrors({})
+		}
 	}
 
 	return (

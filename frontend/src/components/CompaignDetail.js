@@ -63,10 +63,12 @@ const StyledTableCell = withStyles((theme) => ({
 
 function CompaignDetail({ id }) {
 	const compaigns = useRecoilValue(compaignsList)
-	let [currentCompaign] = compaigns.filter((el) => el.id == id)
-	let voteState = currentCompaign.options.map((el) => {
-		return { voted: false, hover: false }
-	})
+	let [currentCompaign] = compaigns && compaigns.filter((el) => el.id == parseInt(id))
+	let voteState = currentCompaign
+		? currentCompaign.options.map((el) => {
+				return { voted: false, hover: false }
+		  })
+		: []
 	const [voteButtonState, setVoteButtonState] = useState(voteState)
 
 	const classes = useStyles()

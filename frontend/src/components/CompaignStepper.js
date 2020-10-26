@@ -10,6 +10,7 @@ import OptionsSettings from './OptionsSettings'
 import ReviewAndFinish from './ReviewAndFinish'
 import { useRecoilState } from 'recoil'
 import { compaignsList } from '../state/CompaignState'
+import { createCompaign } from '../actions'
 
 import { letterAndSpacesOnly, numbersOnly, validate } from '../utils/validation'
 
@@ -105,7 +106,6 @@ function CompaignStepper({ handleClose }) {
 			newSkipped.delete(activeStep)
 		}
 		let errors = validateActiveStep(activeStep)
-		console.log('errors', errors)
 		if (errors) {
 			setErrors(errors)
 			return
@@ -133,27 +133,28 @@ function CompaignStepper({ handleClose }) {
 		})
 	}
 
-	const handleSave = () => {
+	const handleSave = async () => {
 		//api call and save to global state
-		setCompaigns([
-			...compaigns,
-			{
-				id: compaigns.length,
-				title: formState[0].title,
-				description: formState[0].description,
-				rounds: formState[0].rounds,
-				organizer: formState[0].organizer,
-				options: formState[1].options.map((option) => {
+		let response = await createCompaign({
+			title: formState[0].title,
+			description: formState[0].description,
+			rounds: formState[0].rounds,
+			organizer: formState[0].organizer,
+			options: {
+				0: formState[1].options.map((option) => {
 					return {
 						label: option.label,
 						votes: 0,
 						voters: [],
-						addedBy: formState[0].organizer,
+						addedBy: formState[0].organizer + ' (organizer)',
 					}
 				}),
 			},
-		])
-		handleClose()
+		})
+		if (response.success) {
+			setCompaigns([...compaigns, response.response])
+			handleClose()
+		}
 	}
 
 	return (

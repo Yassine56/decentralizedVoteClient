@@ -14,7 +14,6 @@ const useStyles = makeStyles({
 function CompaignCards() {
 	const classes = useStyles()
 	const compaigns = useRecoilValue(compaignsList)
-	console.log('compaigns', compaigns)
 	return (
 		<div className={classes.root}>
 			<Grid container spacing={3}>

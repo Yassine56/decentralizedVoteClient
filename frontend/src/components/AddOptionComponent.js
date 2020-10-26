@@ -8,7 +8,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { letterAndSpacesOnly, validate } from '../utils/validation'
 import { useRecoilState } from 'recoil'
 import { compaignsList } from '../state/CompaignState'
-
+import { updateCompaign } from '../actions'
 const useStyles = makeStyles((theme) => ({
 	root: {
 		'& > *': {
@@ -56,7 +56,7 @@ function AddOptionComponent({ compaign }) {
 		addedBy: letterAndSpacesOnly,
 	}
 
-	const onAddIconClick = () => {
+	const onAddIconClick = async () => {
 		let error = validate(formState, validations)
 		if (error) {
 			setErrors(error)
@@ -72,10 +72,22 @@ function AddOptionComponent({ compaign }) {
 			},
 		]
 		let newCompaigns = [...compaigns]
-		newCompaigns[compaign.id] = { ...newCompaigns[compaign.id], options: [...newOptions] }
-		console.log('newCompaigns', newCompaigns)
-		setCompaigns([...newCompaigns])
-		setFormState({ option: '', addedBy: '' })
+		let newCompaignIndex = newCompaigns.findIndex((el) => el.id == compaign.id)
+		newCompaigns[newCompaignIndex] = {
+			...newCompaigns[newCompaignIndex],
+			options: [...newOptions],
+		}
+		// TODO api update Compaign
+		const response = await updateCompaign({
+			...newCompaigns[newCompaignIndex],
+			options: {
+				0: [...newCompaigns[newCompaignIndex].options],
+			},
+		})
+		if (response.success) {
+			setCompaigns([...newCompaigns])
+			setFormState({ option: '', addedBy: '' })
+		}
 	}
 	const handleChange = (e) => {
 		setFormState({

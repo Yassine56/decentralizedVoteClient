@@ -30,7 +30,6 @@ function CompaignSettings({ formState, setFormState, errors }) {
 				[e.target.id]: e.target.value,
 			},
 		})
-		console.log('formstate ', formState)
 	}
 
 	return (

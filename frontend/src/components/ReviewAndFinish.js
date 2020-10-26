@@ -23,8 +23,6 @@ const useStyles = makeStyles((theme) => ({
 function ReviewAndFinish({ formState }) {
 	const classes = useStyles()
 
-	console.log('review and finish', formState)
-
 	return (
 		<div className={classes.root}>
 			<Grid container spacing={3} className={classes.container}>

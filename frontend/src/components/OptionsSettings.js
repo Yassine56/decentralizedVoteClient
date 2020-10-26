@@ -53,10 +53,8 @@ function OptionsSettings({ formState, setFormState }) {
 	}
 	const handleOnChange = (e) => {
 		setTitle(e.target.value)
-		console.log('title', title)
 	}
 
-	console.log('formstate again', formState)
 	return (
 		<form className={classes.root} noValidate autoComplete='off'>
 			<Grid container spacing={3} className={classes.container}>
